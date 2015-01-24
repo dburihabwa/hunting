@@ -1,3 +1,6 @@
+var huntingEngine;
+var intervalId;
+
 function Wall(x, y) {
 	Agent.call(this, x, y, '#888888');
 }
@@ -140,6 +143,7 @@ HuntingSeason.prototype.place = function () {
 HuntingSeason.prototype.tick = function () {
 	if (this.preys === 0) {
 		console.log('Done after ' + this.turns + ' turns!');
+		stopSimulation();
 		return;
 	}
 	this.turns++;
@@ -190,11 +194,45 @@ HuntingSeason.prototype.draw = function () {
 	}
 };
 
+function tick() {
+	huntingEngine.tick();
+	huntingEngine.draw();
+}
+
+function startSimulation() {
+	intervalId = setInterval(function () {
+		tick();
+	}, 20);
+}
+
+function stopSimulation() {
+	if (intervalId) {
+		clearInterval(intervalId);
+	}
+	var tickButton = document.getElementById('tick');
+	tickButton.hidden = true;
+	var startButton = document.getElementById('start');
+	startButton.hidden = true;
+}
+
 window.onload = function () {
-	var engine = new HuntingSeason(25, 25, 1, 2, 250);
-	document.getElementById('startButton').onclick = function () {
-		engine.draw();
-		engine.tick();
-		engine.draw();
+	document.getElementById('settings').onsubmit = function () {
+		var x = parseInt(document.getElementById('x').value, 10);
+		var y = parseInt(document.getElementById('y').value, 10);
+		var walls = parseInt(document.getElementById('walls').value, 10);
+		var predators = parseInt(document.getElementById('predators').value, 10);
+		if ((walls + predators) > (x * y)) {
+			alert('Too many elements and not enough place on the grid!');
+			return false;
+		}
+		huntingEngine = new HuntingSeason(x, y, 1, predators, walls);		
+		var tickButton = document.getElementById('tick');
+		tickButton.onclick = tick;
+		tickButton.hidden = false;
+		var startButton = document.getElementById('start');
+		startButton.onclick = startSimulation;
+		startButton.hidden = false;
+		huntingEngine.draw();
+		return false;
 	};
 };

@@ -10,7 +10,29 @@
 </head>
 <body>
 	<h1>Runners</h1>
-	<button id = "startButton">Tick</button>
+	<form id = "settings" method = "POST">
+		<fieldset>
+			<legend>Dimensions</legend>
+			<label for = "x">X</label>
+			<input id = "x" name = "x" type = "number" min = "1" value = "25" required/>
+			<label for = "y">Y</label>
+			<input id = "y" name = "y" type = "number" min = "1" value = "25" required/>
+		</fieldset>
+		<fieldset>
+			<legend>Simulation</legend>
+			<label for = "predators">Predators</label>
+			<br/>
+			<input id = "predators" name = "predators" type = "number" min = "1" value = "2" required/>
+			<br/>
+			<label for = "walls">Walls</label>
+			<br/>
+			<input id = "walls" name = "walls" type = "number" min = "0" value = "100" required/>
+			<br/>
+			<input type = "submit" "Start simulation"/>
+		</fieldset>
+	</form>
+	<button id = "start" hidden>Start</button>
+	<button id = "tick" hidden>Tick</button>
 	<div id = "simulation"></div>
 	<div id = "plot"></div>
 	<script type="text/javascript" src = "script.js"></script>
