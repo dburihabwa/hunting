@@ -1,6 +1,3 @@
-//Interval id of the function that makes the engine tick and updates the display
-var intervalId;
-
 function Wall(x, y) {
 	Agent.call(this, x, y, '#888888');
 }
@@ -49,15 +46,11 @@ Predator.prototype.constructor = Predator;
 
 Predator.prototype.update = function (engine) {
 	var surroundings = getSurroundings(engine.grid, this.x, this.y);
-	/*
-	var keys = Object.keys(surroundings);
-	keys.splice(keys.indexOf(this.color));
-	keys.splice(keys.indexOf('free'));
-	console.log(JSON.stringify(keys));
-	if (keys.length > 0) {
-		var targetCell = surroundings[keys[0]];
+
+	if (surroundings['#24D666'] && surroundings['#24D666'].length > 0) {
+		var targetCell = surroundings['#24D666'][0];
 		var prey = engine.grid[targetCell.x][targetCell.y];
-		engine.agents[engine.indexOf(prey)] = null;
+		engine.agents[engine.agents.indexOf(prey)] = null;
 		engine.preys--;
 		engine.grid[targetCell.x][targetCell.y] = this;
 		engine.grid[this.x][this.y] = null;
@@ -65,7 +58,6 @@ Predator.prototype.update = function (engine) {
 		this.y = targetCell.y;
 		return;
 	}
-	*/
 	if (surroundings.free.length > 0) {
 		var mostValuableCell = {'x' : this.x, 'y': this.y};
 		var bestValue = Number.MAX_VALUE;
@@ -159,21 +151,20 @@ HuntingSeason.prototype.dijkstra = function (i, j, value) {
 		return;
 	}
 	this.marked[i][j] = value;
-	//var surroundings = getFilteredSurroundings(this.grid, i, j);
 	var surroundings = getSurroundings(this.grid, i, j);
 	var toExplore = [];
 	for (var k = 0; k < surroundings.free.length; k++) {
 		var coords = surroundings.free[k];
 		if ((value + 1) < this.marked[coords.x][coords.y]) {
 			this.marked[coords.x][coords.y] = value + 1;
-			toExplore.push(coords)
+			toExplore.push(coords);
 		}
 	}
 	for (var k = 0; k < toExplore.length; k++) {
 		var coords = toExplore[k];
 		this.dijkstra(coords.x, coords.y, value + 1);
 	}
-}
+};
 
 HuntingSeason.prototype.draw = function () {
 	Engine.prototype.draw.apply(this);
@@ -200,9 +191,8 @@ HuntingSeason.prototype.draw = function () {
 };
 
 window.onload = function () {
-	var engine = new HuntingSeason(5, 5, 1, 2, 10);
+	var engine = new HuntingSeason(25, 25, 1, 2, 250);
 	document.getElementById('startButton').onclick = function () {
-		console.log('POUET!');
 		engine.draw();
 		engine.tick();
 		engine.draw();
