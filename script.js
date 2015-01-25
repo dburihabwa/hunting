@@ -28,13 +28,6 @@ Prey.prototype.update = function (engine) {
 		this.y = cell.y;
 	}
 	var name = 'prey(' + this.x + ', ' + this.y + ')';
-	engine.marked = [];
-	for (var i = 0; i < engine.width; i++) {
-		engine.marked[i] = [];
-		for (var j = 0; j < engine.height; j++) {
-			engine.marked[i].push(Number.MAX_VALUE);
-		}
-	}
 	engine.dijkstra(this.x, this.y, 0);
 };
 
@@ -82,12 +75,9 @@ function HuntingSeason(width, height, preys, predators, walls) {
 	this.preys = preys;
 	this.predators = predators;
 	this.walls = walls;
-	this.marked = [];
+	this.marked = new Array(this.width);
 	for (var i = 0; i < this.width; i++) {
-		this.marked[i] = [];
-		for (var j = 0; j < this.height; j++) {
-			this.marked[i].push(Number.MAX_VALUE);
-		}
+		this.marked[i] = new Array(this.height);
 	}
 	this.turns = 0;
 	this.place();
@@ -145,6 +135,10 @@ HuntingSeason.prototype.tick = function () {
 		return;
 	}
 	this.turns++;
+	this.marked = new Array(this.width);
+	for (var i = 0; i < this.width; i++) {
+		this.marked[i] = new Array(this.height);
+	}
 	Engine.prototype.tick.apply(this);
 };
 
@@ -175,7 +169,7 @@ HuntingSeason.prototype.dijkstra = function (i, j, value) {
 
 function getUnmarkedFree(engine, i, j) {
 	return getSurroundings(engine.grid, i, j).free.filter(function (cell) {
-		return engine.marked[cell.x][cell.y] === Number.MAX_VALUE;
+		return typeof engine.marked[cell.x][cell.y] !== 'number';
 	});
 }
 
@@ -187,7 +181,7 @@ HuntingSeason.prototype.draw = function () {
 		var column = i * GLOBAL.cellSize;
 		for (var j = 0; j < this.height; j++) {
 			if (!this.grid[i][j] || !this.grid[i][j].color) {
-				if (this.marked[i][j] === Number.MAX_VALUE) {
+				if (typeof this.marked[i][j] !== 'number') {
 					continue;
 				}
 				context.fillStyle = '#000000';
