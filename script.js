@@ -35,9 +35,7 @@ Prey.prototype.update = function (engine) {
 			engine.marked[i].push(Number.MAX_VALUE);
 		}
 	}
-	console.time(name);
 	engine.dijkstra(this.x, this.y, 0);
-	console.timeEnd(name);
 };
 
 function Predator(x, y) {
@@ -151,24 +149,36 @@ HuntingSeason.prototype.tick = function () {
 };
 
 HuntingSeason.prototype.dijkstra = function (i, j, value) {
-	if (this.marked[i][j] < value) {
-		return;
-	}
+	var levels = [];
 	this.marked[i][j] = value;
-	var surroundings = getSurroundings(this.grid, i, j);
-	var toExplore = [];
-	for (var k = 0; k < surroundings.free.length; k++) {
-		var coords = surroundings.free[k];
-		if ((value + 1) < this.marked[coords.x][coords.y]) {
-			this.marked[coords.x][coords.y] = value + 1;
-			toExplore.push(coords);
+	levels.push([{'x': i, 'y': j }]);
+	var level;
+	while (true) {
+		level = levels.length - 1;
+		value++;
+		var neighbors = [];
+		for (var k = 0; k < levels[level].length; k++) {
+			var cell = levels[level][k];
+			var unmarkedFree = getUnmarkedFree(this, cell.x, cell.y);
+			for (var l = 0; l < unmarkedFree.length; l++) {
+				var c = unmarkedFree[l];
+				this.marked[c.x][c.y] = value;
+			}
+			neighbors = neighbors.concat(unmarkedFree);
 		}
-	}
-	for (var k = 0; k < toExplore.length; k++) {
-		var coords = toExplore[k];
-		this.dijkstra(coords.x, coords.y, value + 1);
+		if (neighbors.length === 0) {
+			break;
+		}
+		levels.push(neighbors);
 	}
 };
+
+function getUnmarkedFree(engine, i, j) {
+	return getSurroundings(engine.grid, i, j).free.filter(function (cell) {
+		return engine.marked[cell.x][cell.y] === Number.MAX_VALUE;
+	});
+}
+
 
 HuntingSeason.prototype.draw = function () {
 	Engine.prototype.draw.apply(this);
