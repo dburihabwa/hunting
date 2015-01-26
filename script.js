@@ -27,7 +27,6 @@ Prey.prototype.update = function (engine) {
 		this.x = cell.x;
 		this.y = cell.y;
 	}
-	engine.dijkstra(this.x, this.y, 0);
 };
 
 function Predator(x, y) {
@@ -61,11 +60,13 @@ Predator.prototype.update = function (engine) {
 				bestValue = engine.marked[cell.x][cell.y];
 			}
 		}
-		if (bestValue !== Number.MAX_VALUE) {
+		if (mostValuableCell.x !== this.x || mostValuableCell.y !== this.y) {
 			engine.grid[mostValuableCell.x][mostValuableCell.y] = this;
 			engine.grid[this.x][this.y] = null;
 			this.x = mostValuableCell.x;
 			this.y = mostValuableCell.y;
+		} else {
+			console.log('(' + this.x + ', ' + this.y + ') decided not to move!');
 		}
 	}
 
@@ -95,7 +96,6 @@ HuntingSeason.prototype.place = function () {
 			y = Math.floor(Math.random() * this.height);
 			if (!this.grid[x][y]) {
 				this.grid[x][y] = new Wall(x, y);
-				this.agents.push(this.grid[x][y]);
 				i++;
 				break;
 			}
@@ -140,13 +140,20 @@ HuntingSeason.prototype.tick = function () {
 	for (var i = 0; i < this.width; i++) {
 		this.marked[i] = new Array(this.height);
 	}
+	this.dijkstra();
 	Engine.prototype.tick.apply(this);
 };
 
-HuntingSeason.prototype.dijkstra = function (i, j, value) {
+HuntingSeason.prototype.dijkstra = function () {
+	var value = 0;
 	var levels = [];
-	this.marked[i][j] = value;
-	levels.push([{'x': i, 'y': j }]);
+	var engine = this;
+	var preys = this.agents.filter(function (agent) {
+		return agent instanceof Prey;
+	}).map(function (prey) {
+		engine.marked[prey.x][prey.y] = value;return {'x': prey.x, 'y': prey.y};
+	});
+	levels.push(preys);
 	var level;
 	while (true) {
 		level = levels.length - 1;
@@ -200,6 +207,7 @@ HuntingSeason.prototype.draw = function () {
 };
 
 function tick() {
+	huntingEngine.draw();
 	huntingEngine.tick();
 	huntingEngine.draw();
 }
@@ -224,13 +232,14 @@ window.onload = function () {
 	document.getElementById('settings').onsubmit = function () {
 		var x = parseInt(document.getElementById('x').value, 10);
 		var y = parseInt(document.getElementById('y').value, 10);
+		var preys = parseInt(document.getElementById('preys').value, 10);
 		var walls = parseInt(document.getElementById('walls').value, 10);
 		var predators = parseInt(document.getElementById('predators').value, 10);
-		if ((walls + predators) > (x * y)) {
+		if ((preys + walls + predators) > (x * y)) {
 			alert('Too many elements and not enough place on the grid!');
 			return false;
 		}
-		huntingEngine = new HuntingSeason(x, y, 1, predators, walls);		
+		huntingEngine = new HuntingSeason(x, y, preys, predators, walls);
 		var tickButton = document.getElementById('tick');
 		tickButton.onclick = tick;
 		tickButton.hidden = false;
