@@ -27,7 +27,6 @@ Prey.prototype.update = function (engine) {
 		this.x = cell.x;
 		this.y = cell.y;
 	}
-	var name = 'prey(' + this.x + ', ' + this.y + ')';
 	engine.dijkstra(this.x, this.y, 0);
 };
 
@@ -62,10 +61,12 @@ Predator.prototype.update = function (engine) {
 				bestValue = engine.marked[cell.x][cell.y];
 			}
 		}
-		engine.grid[mostValuableCell.x][mostValuableCell.y] = this;
-		engine.grid[this.x][this.y] = null;
-		this.x = mostValuableCell.x;
-		this.y = mostValuableCell.y;
+		if (bestValue !== Number.MAX_VALUE) {
+			engine.grid[mostValuableCell.x][mostValuableCell.y] = this;
+			engine.grid[this.x][this.y] = null;
+			this.x = mostValuableCell.x;
+			this.y = mostValuableCell.y;
+		}
 	}
 
 };
@@ -235,6 +236,12 @@ window.onload = function () {
 		tickButton.hidden = false;
 		var startButton = document.getElementById('start');
 		startButton.onclick = startSimulation;
+		var drawingDiv = document.getElementById(huntingEngine.drawingDiv);
+		if (drawingDiv) {
+			while (drawingDiv.firstChild) {
+				drawingDiv.removeChild(drawingDiv.firstChild);
+			}
+		}
 		startButton.hidden = false;
 		huntingEngine.draw();
 		return false;

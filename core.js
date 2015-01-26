@@ -33,12 +33,9 @@ function Engine(width, height, drawingDiv) {
 	this.width = width;
 	this.height = height;
 	this.drawingDiv = drawingDiv;
-	this.grid = [];
+	this.grid = new Array(this.width);
 	for (var i = 0; i < this.width; i++) {
-		this.grid[i] = [];
-		for (var j = 0; j < this.height; j++) {
-			this.grid[i][j] = null;
-		}
+		this.grid[i] = new Array(this.height);
 	}
 	this.agents = [];
 }
