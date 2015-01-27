@@ -131,8 +131,10 @@ HuntingSeason.prototype.place = function () {
 
 HuntingSeason.prototype.tick = function () {
 	if (this.preys === 0) {
-		console.log('Done after ' + this.turns + ' turns!');
 		stopSimulation();
+		var message = 'Done after ' + this.turns + ' turns!';
+		console.log(message);
+		alert('Done after ' + this.turns + ' turns!');
 		return;
 	}
 	this.turns++;
