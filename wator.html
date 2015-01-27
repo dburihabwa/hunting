@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset = "utf-8"/>
+	<link type = "text/css" rel = "stylesheet" href = "style.css"/>
+	<script type = "text/javascript" src = "jquery-2.1.3.min.js"></script>
+	<script type = "text/javascript" src = "dygraph-combined.js"></script>
+	<script type = "text/javascript" src = "highcharts.js"></script>
+	<script type = "text/javascript" src = "core.js"></script>
+</head>
+<body>
+<h1>Simulation thons vs requins</h1>
+<form id = "settings" method = "POST">
+	<label for = "engine.x">x</label>
+	<input id = "engine.x" name = "engine.x" type = "number" min = "1" value = "50" required/>
+	<label for = "engine.y">y</label>
+	<input id = "engine.y" name = "engine.y" type = "number" min = "1" value = "50" required/>
+	<br/>
+	<label for = "engine.sharks">Sharks</label>
+	<input id = "engine.sharks" name = "engine.sharks" type = "number" min = "1" value = "50" required/>
+	<label for = "engine.tunas">Tunas</label>
+	<input id = "engine.tunas" name = "engine.tunas" type = "number" min = "1" value = "400" required/>
+	<br/>
+	<button id = "startButton" type = "submit">Start</button>
+	<hr/>
+</form>
+<div id = "simulation"></div>
+<h2>Populations</h2>
+<div id = "population"></div>
+<textarea id = "populationDump"></textarea>
+<h2>Ratio requins/thons</h2>
+<div id = "ratio"></div>
+<textarea id = "ratioDump"></textarea>
+<h2>Pyramide des ages</h2>
+<div id = "pyramid"></div>
+<textarea id = "ageDump"></textarea>
+<script type = "text/javascript" src = "wator.js" ></script>
+</body>
+</html>

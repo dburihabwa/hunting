@@ -2,7 +2,7 @@
 var context;
 var GLOBAL = {
 	//Size of each cell drawn in the canvas
-	cellSize: 15
+	cellSize: 5
 };
 /**
  * Abstract agent.
@@ -46,9 +46,8 @@ function Engine(width, height, drawingDiv) {
  * @param {function} onCompletion - A function that takes no argument and is called when all agents have been updated
  */
 Engine.prototype.tick = function (onUpdate, onCompletion) {
-	this.agents = shuffle(this.agents);
-	var i = this.agents.length;
-	while (--i) {
+	this.agents = shuffle(this.agents);	
+	for (var i = this.agents.length - 1; i >= 0; i--) {
 		if (!this.agents[i]) {
 			continue;
 		}
