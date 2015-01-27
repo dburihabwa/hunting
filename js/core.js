@@ -2,7 +2,7 @@
 var context;
 var GLOBAL = {
 	//Size of each cell drawn in the canvas
-	cellSize: 5
+	cellSize: 15
 };
 /**
  * Abstract agent.
